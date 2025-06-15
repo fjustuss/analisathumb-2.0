@@ -15,13 +15,10 @@
         .progress-bar-fill { transition: width 0.8s ease-out; }
         .tab-active { border-color: #4f46e5; color: #4f46e5; background-color: rgba(79, 70, 229, 0.1); }
         .tab-inactive { border-color: #4b5563; color: #d1d5db; }
-        .recommendations-list::-webkit-scrollbar { width: 8px; }
-        .recommendations-list::-webkit-scrollbar-track { background: #1f2937; }
-        .recommendations-list::-webkit-scrollbar-thumb { background-color: #4f46e5; border-radius: 20px; border: 3px solid #1f2937; }
+        .recommendations-list::-webkit-scrollbar, .titles-list::-webkit-scrollbar { width: 8px; }
+        .recommendations-list::-webkit-scrollbar-track, .titles-list::-webkit-scrollbar-track { background: #1f2937; }
+        .recommendations-list::-webkit-scrollbar-thumb, .titles-list::-webkit-scrollbar-thumb { background-color: #4f46e5; border-radius: 20px; border: 3px solid #1f2937; }
         .prompt-suggestion { background-color: rgba(79, 70, 229, 0.1); border-left: 4px solid #4f46e5; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.9em; color: #e5e7eb; }
-        .ai-selector-btn { transition: all 0.2s ease-in-out; }
-        .ai-selector-btn.selected { background-color: #4f46e5; color: white; border-color: #4f46e5; }
-        .ai-selector-btn:not(.selected) { background-color: #374151; color: #d1d5db; border-color: #4b5563; }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col items-center justify-center p-4">
@@ -29,11 +26,12 @@
     <div class="w-full max-w-4xl mx-auto">
         <header class="text-center mb-6 relative">
             <h1 class="text-4xl md:text-5xl font-extrabold gradient-text">AnalisaThumb</h1>
-            <p class="text-gray-400 mt-2 text-lg">Potencialize seu CTR com a análise de IA.</p>
+            <p class="text-gray-400 mt-2 text-lg">Potencialize seu CTR com a análise do Gemini.</p>
         </header>
 
         <div id="app-container" class="bg-gray-800/50 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-700">
             <div id="input-section">
+                <!-- Tabs -->
                 <div class="flex border-b border-gray-700 mb-6">
                     <button id="tab-upload" class="flex-1 py-3 px-4 text-center font-semibold border-b-2 transition-colors duration-300 tab-active">Enviar Imagem</button>
                     <button id="tab-url" class="flex-1 py-3 px-4 text-center font-semibold border-b-2 transition-colors duration-300 tab-inactive">Colar URL</button>
@@ -48,18 +46,41 @@
                 <div id="context-inputs-container" class="hidden mt-6 space-y-4">
                     <p class="text-sm font-semibold text-gray-400 text-center">Pré-visualização e Contexto</p>
                     <img id="image-preview" src="" alt="Pré-visualização" class="max-w-xs mx-auto rounded-lg shadow-lg border-2 border-gray-700">
-                    <div class="max-w-md mx-auto text-left"><label for="video-title-input" class="block mb-2 text-sm font-medium">Título do Vídeo</label><input type="text" id="video-title-input" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2.5" placeholder="Ex: 5 Segredos da IA..."></div>
-                    <div class="max-w-md mx-auto text-left"><label for="niche-select" class="block mb-2 text-sm font-medium">Nicho do Vídeo</label><select id="niche-select" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2.5"><option selected>Tecnologia / IA</option><option>Games</option><option>Finanças</option><option>Vlogs / Lifestyle</option><option>Educação</option><option value="Outro">Outro</option></select><div id="custom-niche-container" class="hidden mt-4"><input type="text" id="custom-niche-input" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2.5" placeholder="Digite seu nicho..."></div></div>
-                </div>
-
-                <div id="ai-selector-container" class="hidden mt-6">
-                    <label class="block mb-2 text-sm font-medium text-center text-gray-300">Escolha o Motor de Análise</label>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 max-w-md mx-auto">
-                        <button class="ai-selector-btn p-2 rounded-lg border-2" data-ai="gemini">Gemini</button>
-                        <button class="ai-selector-btn p-2 rounded-lg border-2" data-ai="openai">ChatGPT</button>
-                        <button class="ai-selector-btn p-2 rounded-lg border-2" data-ai="deepseek">DeepSeek</button>
-                        <button class="ai-selector-btn p-2 rounded-lg border-2 selected" data-ai="simulation">Simulação</button>
+                    <div class="max-w-md mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="text-left">
+                            <label for="language-select" class="block mb-2 text-sm font-medium">Idioma</label>
+                            <select id="language-select" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2.5">
+                                <option selected value="português">Português</option>
+                                <option value="english">English (Inglês)</option>
+                                <option value="español">Español (Espanhol)</option>
+                                <option value="français">Français (Francês)</option>
+                                <option value="deutsch">Deutsch (Alemão)</option>
+                                <option value="italiano">Italiano</option>
+                                <option value="Русский">Русский (Russo)</option>
+                                <option value="日本語">日本語 (Japonês)</option>
+                                <option value="한국어">한국어 (Coreano)</option>
+                                <option value="中文">中文 (Mandarim)</option>
+                                <option value="हिन्दी">हिन्दी (Hindi)</option>
+                                <option value="العربية">العربية (Árabe)</option>
+                                <option value="Türkçe">Türkçe (Turco)</option>
+                                <option value="Polski">Polski (Polonês)</option>
+                                <option value="Nederlands">Nederlands (Holandês)</option>
+                            </select>
+                        </div>
+                        <div class="text-left">
+                            <label for="niche-select" class="block mb-2 text-sm font-medium">Nicho</label>
+                            <select id="niche-select" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2.5">
+                                <option selected>Tecnologia / IA</option>
+                                <option>Games</option>
+                                <option>Finanças</option>
+                                <option>Vlogs / Lifestyle</option>
+                                <option>Educação</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
                     </div>
+                    <div class="max-w-md mx-auto text-left"><div id="custom-niche-container" class="hidden"><input type="text" id="custom-niche-input" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2.5" placeholder="Digite seu nicho..."></div></div>
+                    <div class="max-w-md mx-auto text-left"><label for="video-title-input" class="block mb-2 text-sm font-medium">Título do Vídeo</label><input type="text" id="video-title-input" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2.5" placeholder="Ex: 5 Segredos da IA..."></div>
                 </div>
 
                 <div class="mt-8 text-center"><button id="analyze-button" class="bg-indigo-600 text-white font-bold py-3 px-10 rounded-lg hover:bg-indigo-500 transition-all disabled:bg-gray-600 disabled:cursor-not-allowed" disabled>Analisar</button></div>
@@ -68,7 +89,24 @@
             <div id="loading-spinner" class="hidden text-center py-20"><div role="status"><svg aria-hidden="true" class="inline w-12 h-12 text-gray-600 animate-spin fill-indigo-500" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0492C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg><p id="loading-text" class="mt-4 text-lg text-gray-400">Analisando...</p></div></div>
             
             <div id="results-section" class="hidden">
-                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8"><div class="lg:col-span-1 bg-gray-900/50 p-6 rounded-xl flex flex-col items-center justify-center border border-gray-700"><h2 class="text-xl font-bold mb-4 text-center">Pontuação Final</h2><div class="relative w-48 h-48"><svg class="w-full h-full" viewBox="0 0 100 100"><circle class="text-gray-700" stroke-width="10" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" /><circle id="score-circle-progress" class="score-circle text-indigo-500" stroke-width="10" stroke-linecap="round" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" style="stroke-dasharray: 283; stroke-dashoffset: 283;" /></svg><div id="score-text" class="absolute inset-0 flex items-center justify-center text-5xl font-extrabold gradient-text">0</div></div><img id="result-image-preview" src="" alt="Thumbnail Analisada" class="mt-6 w-full rounded-lg shadow-lg border-2 border-gray-600"></div><div class="lg:col-span-2"><div class="bg-gray-900/50 p-6 rounded-xl border border-gray-700 mb-6"><h3 class="text-xl font-bold mb-5">Análise Detalhada</h3><div id="detailed-analysis-container" class="space-y-4"></div></div><div class="bg-gray-900/50 p-6 rounded-xl border border-gray-700"><h3 class="text-xl font-bold mb-4">Recomendações para Melhorar</h3><ul id="recommendations-list" class="space-y-3 h-48 overflow-y-auto pr-2 recommendations-list"></ul></div></div></div>
+                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                    <div class="lg:col-span-1 bg-gray-900/50 p-6 rounded-xl flex flex-col items-center justify-center border border-gray-700">
+                        <h2 class="text-xl font-bold mb-4 text-center">Pontuação Final</h2>
+                        <div class="relative w-48 h-48"><svg class="w-full h-full" viewBox="0 0 100 100"><circle class="text-gray-700" stroke-width="10" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" /><circle id="score-circle-progress" class="score-circle text-indigo-500" stroke-width="10" stroke-linecap="round" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" style="stroke-dasharray: 283; stroke-dashoffset: 283;" /></svg><div id="score-text" class="absolute inset-0 flex items-center justify-center text-5xl font-extrabold gradient-text">0</div></div>
+                        <img id="result-image-preview" src="" alt="Thumbnail Analisada" class="mt-6 w-full rounded-lg shadow-lg border-2 border-gray-600">
+                    </div>
+                    <div class="lg:col-span-2">
+                        <div class="bg-gray-900/50 p-6 rounded-xl border border-gray-700 mb-6"><h3 class="text-xl font-bold mb-5">Análise Detalhada</h3><div id="detailed-analysis-container" class="space-y-4"></div></div>
+                        <div class="bg-gray-900/50 p-6 rounded-xl border border-gray-700"><h3 class="text-xl font-bold mb-4">Recomendações para Melhorar</h3><ul id="recommendations-list" class="space-y-3 h-48 overflow-y-auto pr-2 recommendations-list"></ul></div>
+                    </div>
+                 </div>
+                 <!-- Nova Seção de Sugestão de Títulos -->
+                 <div id="suggested-titles-section" class="hidden mt-6 bg-gray-900/50 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">Sugestões de Títulos Otimizados</h3>
+                    <ul id="titles-list" class="space-y-3 titles-list">
+                        <!-- Títulos serão injetados aqui -->
+                    </ul>
+                 </div>
                  <div class="mt-8 flex justify-center"><button id="restart-button" class="bg-gray-600 text-white font-bold py-3 px-10 rounded-lg hover:bg-gray-500">Analisar Outra</button></div>
             </div>
         </div>
@@ -78,6 +116,12 @@
 
 <script>
 const allDOMElements = {
+    // ... outros elementos ...
+    languageSelect: document.getElementById('language-select'),
+    suggestedTitlesSection: document.getElementById('suggested-titles-section'),
+    titlesList: document.getElementById('titles-list'),
+    
+    // Elementos já existentes
     tabUpload: document.getElementById('tab-upload'),
     tabUrl: document.getElementById('tab-url'),
     formUpload: document.getElementById('form-upload'),
@@ -85,7 +129,6 @@ const allDOMElements = {
     imageUploadInput: document.getElementById('image-upload'),
     youtubeUrlInput: document.getElementById('youtube-url'),
     contextInputsContainer: document.getElementById('context-inputs-container'),
-    aiSelectorContainer: document.getElementById('ai-selector-container'),
     imagePreview: document.getElementById('image-preview'),
     videoTitleInput: document.getElementById('video-title-input'),
     nicheSelect: document.getElementById('niche-select'),
@@ -102,11 +145,9 @@ const allDOMElements = {
     detailedAnalysisContainer: document.getElementById('detailed-analysis-container'),
     recommendationsList: document.getElementById('recommendations-list'),
     restartButton: document.getElementById('restart-button'),
-    aiSelectorBtns: document.querySelectorAll('.ai-selector-btn')
 };
 
 let imageDataSource = null;
-let selectedAI = 'simulation';
 
 function setupEventListeners() {
     const el = allDOMElements;
@@ -117,13 +158,6 @@ function setupEventListeners() {
     el.nicheSelect.addEventListener('change', handleNicheChange);
     el.analyzeButton.addEventListener('click', startAnalysis);
     el.restartButton.addEventListener('click', resetApp);
-    el.aiSelectorBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            el.aiSelectorBtns.forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedAI = btn.dataset.ai;
-        });
-    });
 }
 
 document.addEventListener('DOMContentLoaded', setupEventListeners);
@@ -131,9 +165,7 @@ document.addEventListener('DOMContentLoaded', setupEventListeners);
 function switchTab(tabName) {
     const el = allDOMElements;
     el.tabUpload.classList.toggle('tab-active', tabName === 'upload');
-    el.tabUpload.classList.toggle('tab-inactive', tabName !== 'upload');
-    el.tabUrl.classList.toggle('tab-active', tabName === 'url');
-    el.tabUrl.classList.toggle('tab-inactive', tabName !== 'url');
+    el.tabUrl.classList.toggle('tab-active', tabName !== 'url');
     el.formUpload.classList.toggle('hidden', tabName !== 'upload');
     el.formUrl.classList.toggle('hidden', tabName === 'upload');
     resetInputs();
@@ -144,8 +176,8 @@ function resetInputs() {
     el.imageUploadInput.value = '';
     el.youtubeUrlInput.value = '';
     el.contextInputsContainer.classList.add('hidden');
-    el.aiSelectorContainer.classList.add('hidden');
     el.videoTitleInput.value = '';
+    el.languageSelect.value = 'português';
     el.customNicheContainer.classList.add('hidden');
     el.customNicheInput.value = '';
     el.nicheSelect.selectedIndex = 0;
@@ -178,7 +210,6 @@ function handleUrlInput() {
         showPreview(thumbnailUrl);
     } else {
         allDOMElements.contextInputsContainer.classList.add('hidden');
-        allDOMElements.aiSelectorContainer.classList.add('hidden');
         allDOMElements.analyzeButton.disabled = true;
     }
 }
@@ -192,7 +223,6 @@ function showPreview(src) {
     const el = allDOMElements;
     el.imagePreview.setAttribute('src', src);
     el.contextInputsContainer.classList.remove('hidden');
-    el.aiSelectorContainer.classList.remove('hidden');
     el.analyzeButton.disabled = false;
 }
 
@@ -203,70 +233,43 @@ function handleNicheChange() {
 async function startAnalysis() {
     if (!imageDataSource) return;
 
-    allDOMElements.inputSection.classList.add('hidden');
-    allDOMElements.loadingSpinner.classList.remove('hidden');
-    allDOMElements.loadingText.textContent = `Analisando com ${selectedAI.toUpperCase()}...`;
-
-    if (selectedAI === 'simulation') {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        const simResults = runLocalSimulation(allDOMElements.videoTitleInput.value, allDOMElements.nicheSelect.value);
-        displayResults(simResults);
-        return;
-    }
-
     const el = allDOMElements;
+    el.inputSection.classList.add('hidden');
+    el.loadingSpinner.classList.remove('hidden');
+    el.loadingText.textContent = `Analisando com Gemini...`;
+
     let niche = el.nicheSelect.value === 'Outro' ? el.customNicheInput.value.trim() : el.nicheSelect.options[el.nicheSelect.selectedIndex].text;
     niche = niche || 'Desconhecido';
     const title = el.videoTitleInput.value;
+    const language = el.languageSelect.value;
     
+    const backendUrl = '/api/analyze'; 
+
     try {
-        const response = await fetch('/api/analyze', {
+        const response = await fetch(backendUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                ai_service: selectedAI,
                 image_data_url: imageDataSource,
                 title: title,
                 niche: niche,
+                language: language
             }),
         });
 
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`O servidor respondeu com erro ${response.status}. Resposta: ${errorText.substring(0, 500)}`);
+        }
+        
         const results = await response.json();
-        if (!response.ok) throw new Error(results.error || `Erro ${response.status}`);
         displayResults(results);
 
     } catch (error) {
         console.error("Erro na análise:", error);
-        alert(`Ocorreu um erro durante a análise: ${error.message}.`);
+        alert(`Ocorreu um erro durante a análise:\n${error.message}`);
         resetApp();
     }
-}
-
-function runLocalSimulation(videoTitle, selectedNiche) {
-    const recommendations = [];
-    const details = [];
-    let totalScore = 0;
-    const lowerCaseTitle = videoTitle.toLowerCase();
-    if(lowerCaseTitle.includes('como') || lowerCaseTitle.includes('tutorial')) recommendations.push("Para tutoriais, mostre o resultado final na thumbnail.");
-    const numberInList = lowerCaseTitle.match(/\d+/);
-    if(numberInList) recommendations.push(`Destaque o número '${numberInList[0]}' na thumbnail com uma fonte grande!`);
-
-    const criteria = ["Legibilidade do Texto", "Impacto Emocional", "Foco e Composição", "Uso de Cores", `Relevância (${selectedNiche})`];
-    criteria.forEach(name => {
-        const score = Math.floor(Math.random() * 51) + 45;
-        if(score < 75) recommendations.push(`Melhorar: ${name.split('(')[0].trim()}`);
-        details.push({ name, score });
-        totalScore += score;
-    });
-
-    if (details.find(d => d.name.includes("Composição")).score < 60 && videoTitle.length > 5) {
-        let promptCore = videoTitle.split(' ').slice(0, 5).join(' ').replace(/como|o que é|de/g, '');
-        recommendations.push(`Sugestão de Prompt: ${promptCore}, close-up, cores vibrantes, estilo cinematográfico, para thumbnail do YouTube --ar 16:9`);
-    }
-    
-    if (recommendations.length === 0) recommendations.push("Ótima thumbnail! Parece bem otimizada.");
-    const finalScore = Math.round(totalScore / details.length);
-    return { finalScore, details, recommendations };
 }
 
 function displayResults(results) {
@@ -274,9 +277,10 @@ function displayResults(results) {
     el.loadingSpinner.classList.add('hidden');
     el.resultsSection.classList.remove('hidden');
 
-    let finalScore = results.finalScore;
-    if (!finalScore && results.details) {
-        finalScore = Math.round(results.details.reduce((acc, item) => acc + item.score, 0) / results.details.length);
+    let finalScore = 0;
+    if (results.details && results.details.length > 0) {
+        const total = results.details.reduce((acc, item) => acc + item.score, 0);
+        finalScore = Math.round(total / results.details.length);
     }
     
     let currentScore = 0;
@@ -305,11 +309,30 @@ function displayResults(results) {
         const icon = !isPrompt ? '<svg class="w-5 h-5 mr-3 text-indigo-400 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"></path></svg>' : '';
         el.recommendationsList.innerHTML += `<li class="flex items-start">${icon}${content}</li>`;
     });
+
+    // Populando a lista de títulos sugeridos
+    el.titlesList.innerHTML = '';
+    if (results.suggested_titles && results.suggested_titles.length > 0) {
+        results.suggested_titles.forEach(title => {
+            const titleItem = `
+                <li class="flex items-center p-2 bg-gray-800/50 rounded-md">
+                    <svg class="w-5 h-5 mr-3 text-indigo-400 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                    <span>${title}</span>
+                </li>
+            `;
+            el.titlesList.innerHTML += titleItem;
+        });
+        el.suggestedTitlesSection.classList.remove('hidden');
+    } else {
+        el.suggestedTitlesSection.classList.add('hidden');
+    }
 }
 
 function resetApp() {
-    allDOMElements.resultsSection.classList.add('hidden');
-    allDOMElements.inputSection.classList.remove('hidden');
+    const el = allDOMElements;
+    el.resultsSection.classList.add('hidden');
+    el.suggestedTitlesSection.classList.add('hidden');
+    el.inputSection.classList.remove('hidden');
     resetInputs();
 }
 
